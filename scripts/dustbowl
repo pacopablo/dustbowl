@@ -1,0 +1,85 @@
+#!python
+# -*- coding: utf-8 -*-
+#
+# Copyright (C) 2009, John Hampton <pacopablo@pacopablo.com>
+# All rights reserved.
+#
+# This software is licensed as described in the file COPYING, which
+# you should have received as part of this distribution.
+#
+# Author: John Hampton <pacopablo@pacopablo.com
+
+# Standard library imports
+import sys
+import os
+from optparse import OptionParser
+from code import InteractiveConsole, compile_command
+
+# Third Party imports
+
+# Local imports
+import dustbowl.shell
+
+VERSION='0.0.1'
+
+
+
+def doArgs(argv):
+    """ Parse the command line arguments.
+
+    --history=<file>    Path to the readline command history file.  Default:
+                        .gshistory
+    """
+    global VERSION
+    usage = 'usage: %prog [options]'
+    version = '%%prog %s' % VERSION
+    description = '%prog is a Python interpreter Shell for dealing with GS stuff'
+    parser = OptionParser(usage=usage, version=version, description=description)
+    parser.add_option('', '--history', dest='histfile', type="string",
+                        help="Path to readline history file", metavar='<path>',
+                        default='.gshistory')
+    parser.add_option('-c', '--config', dest='config', type="string",
+                        help="Path to shell config .ini file", metavar='<path>',
+                        default='')
+    parser.add_option('-p', '--plugins', dest='plugins', type="string",
+                        help="Comma separated list of paths from which to "
+                        "load plugins", metavar='<path>', default='')
+    options, args = parser.parse_args(argv)
+    options.args = args
+
+    if options.config and os.path.isfile(options.config):
+        pass
+    elif os.path.isfile('shell.ini'):
+        options.config = 'shell.ini'
+
+    plugin_paths = options.plugins.split(',')
+    options.plugins = []
+    for path in plugin_paths:
+        if os.path.isdir(path):
+            options.plugins.append((path, True))
+        continue
+
+    return options
+
+
+def main(argv):
+    """ Main shell.
+
+    argv is a list of command line arguments, minus the program name
+    """
+
+    args = doArgs(argv)
+    historyPath = args.histfile
+
+    import dustbowl.log
+    FORMAT="%(asctime)s | %(levelname)07s | %(name)s | %(module)s:%(lineno)d | %(message)s"
+    shell_logger = dustbowl.log.get_logger('dustbowl', format=FORMAT)
+    import dustbowl.tabcomp
+    dustbowl.tabcomp.enable_tabbed_completion(historyPath, locals())
+
+    console = dustbowl.shell.GSConsole(locals=locals(), args=args, logger=shell_logger)
+    console.interact()
+    return 0
+
+if __name__ == '__main__':
+    sys.exit(main(sys.argv[1:]))
