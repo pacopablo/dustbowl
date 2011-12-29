@@ -1,0 +1,342 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>NShell Configuration &mdash; NShell 1.0.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '1.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="NShell 1.0.1 documentation" href="index.html" />
+    <link rel="prev" title="NShell Environment" href="env.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="env.html" title="NShell Environment"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">NShell 1.0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="nshell-configuration">
+<h1>NShell Configuration<a class="headerlink" href="#nshell-configuration" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="dustbowl.config.Configuration">
+<em class="property">class </em><tt class="descclassname">dustbowl.config.</tt><tt class="descname">Configuration</tt><big>(</big><em>filename</em><big>)</big><a class="headerlink" href="#dustbowl.config.Configuration" title="Permalink to this definition">¶</a></dt>
+<dd><p>Thin layer over <cite>ConfigParser</cite> from the Python standard library.</p>
+<p>In addition to providing some convenience methods, the class remembers
+the last modification time of the configuration file, and reparses it
+when the file has changed.</p>
+<dl class="method">
+<dt id="dustbowl.config.Configuration.defaults">
+<tt class="descname">defaults</tt><big>(</big><big>)</big><a class="headerlink" href="#dustbowl.config.Configuration.defaults" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a dictionary of the default configuration values.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="dustbowl.config.Configuration.get">
+<tt class="descname">get</tt><big>(</big><em>section</em>, <em>name</em>, <em>default=''</em><big>)</big><a class="headerlink" href="#dustbowl.config.Configuration.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the value of the specified option.</p>
+<p>Valid default input is a string. Returns a string.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="dustbowl.config.Configuration.getbool">
+<tt class="descname">getbool</tt><big>(</big><em>section</em>, <em>name</em>, <em>default=''</em><big>)</big><a class="headerlink" href="#dustbowl.config.Configuration.getbool" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the specified option as boolean value.</p>
+<p>If the value of the option is one of &#8220;yes&#8221;, &#8220;true&#8221;, &#8220;enabled&#8221;, &#8220;on&#8221;,
+or &#8220;1&#8221;, this method wll return <cite>True</cite>, otherwise <cite>False</cite>.</p>
+<p>Valid default input is a string or a bool. Returns a bool.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="dustbowl.config.Configuration.getint">
+<tt class="descname">getint</tt><big>(</big><em>section</em>, <em>name</em>, <em>default=''</em><big>)</big><a class="headerlink" href="#dustbowl.config.Configuration.getint" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the value of the specified option as integer.</p>
+<p>If the specified option can not be converted to an integer, a
+<cite>ConfigurationError</cite> exception is raised.</p>
+<p>Valid default input is a string or an int. Returns an int.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="dustbowl.config.Configuration.getlist">
+<tt class="descname">getlist</tt><big>(</big><em>section</em>, <em>name</em>, <em>default=''</em>, <em>sep='</em>, <em>'</em>, <em>keep_empty=False</em><big>)</big><a class="headerlink" href="#dustbowl.config.Configuration.getlist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a list of values that have been specified as a single
+comma-separated option.</p>
+<p>A different separator can be specified using the <cite>sep</cite> parameter. If
+the <cite>keep_empty</cite> parameter is set to <cite>True</cite>, empty elements are
+included in the list.</p>
+<p>Valid default input is a string or a list. Returns a string.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="dustbowl.config.Configuration.has_option">
+<tt class="descname">has_option</tt><big>(</big><em>section</em>, <em>option</em><big>)</big><a class="headerlink" href="#dustbowl.config.Configuration.has_option" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns True if option exists in section in either project or
+parent trac.ini, or available through the Option registry.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="dustbowl.config.Configuration.options">
+<tt class="descname">options</tt><big>(</big><em>section</em><big>)</big><a class="headerlink" href="#dustbowl.config.Configuration.options" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a list of <cite>(name, value)</cite> tuples for every option in the
+specified section.</p>
+<p>This includes options that have default values that haven&#8217;t been
+overridden.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="dustbowl.config.Configuration.remove">
+<tt class="descname">remove</tt><big>(</big><em>section</em>, <em>name</em><big>)</big><a class="headerlink" href="#dustbowl.config.Configuration.remove" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove the specified option.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="dustbowl.config.Configuration.save">
+<tt class="descname">save</tt><big>(</big><big>)</big><a class="headerlink" href="#dustbowl.config.Configuration.save" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write the configuration options to the primary file.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="dustbowl.config.Configuration.sections">
+<tt class="descname">sections</tt><big>(</big><big>)</big><a class="headerlink" href="#dustbowl.config.Configuration.sections" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a list of section names.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="dustbowl.config.Configuration.set">
+<tt class="descname">set</tt><big>(</big><em>section</em>, <em>name</em>, <em>value</em><big>)</big><a class="headerlink" href="#dustbowl.config.Configuration.set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Change a configuration value.</p>
+<p>These changes are not persistent unless saved with <cite>save()</cite>.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="dustbowl.config.Section">
+<em class="property">class </em><tt class="descclassname">dustbowl.config.</tt><tt class="descname">Section</tt><big>(</big><em>config</em>, <em>name</em><big>)</big><a class="headerlink" href="#dustbowl.config.Section" title="Permalink to this definition">¶</a></dt>
+<dd><p>Proxy for a specific configuration section.</p>
+<p>Objects of this class should not be instantiated directly.</p>
+<dl class="method">
+<dt id="dustbowl.config.Section.get">
+<tt class="descname">get</tt><big>(</big><em>name</em>, <em>default=''</em><big>)</big><a class="headerlink" href="#dustbowl.config.Section.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the value of the specified option.</p>
+<p>Valid default input is a string. Returns a string.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="dustbowl.config.Section.getbool">
+<tt class="descname">getbool</tt><big>(</big><em>name</em>, <em>default=''</em><big>)</big><a class="headerlink" href="#dustbowl.config.Section.getbool" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the value of the specified option as boolean.</p>
+<p>This method returns <cite>True</cite> if the option value is one of &#8220;yes&#8221;, &#8220;true&#8221;,
+&#8220;enabled&#8221;, &#8220;on&#8221;, or &#8220;1&#8221;, ignoring case. Otherwise <cite>False</cite> is returned.</p>
+<p>Valid default input is a string or a bool. Returns a bool.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="dustbowl.config.Section.getint">
+<tt class="descname">getint</tt><big>(</big><em>name</em>, <em>default=''</em><big>)</big><a class="headerlink" href="#dustbowl.config.Section.getint" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the value of the specified option as integer.</p>
+<p>If the specified option can not be converted to an integer, a
+<cite>ConfigurationError</cite> exception is raised.</p>
+<p>Valid default input is a string or an int. Returns an int.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="dustbowl.config.Section.getlist">
+<tt class="descname">getlist</tt><big>(</big><em>name</em>, <em>default=''</em>, <em>sep='</em>, <em>'</em>, <em>keep_empty=True</em><big>)</big><a class="headerlink" href="#dustbowl.config.Section.getlist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a list of values that have been specified as a single
+comma-separated option.</p>
+<p>A different separator can be specified using the <cite>sep</cite> parameter. If
+the <cite>keep_empty</cite> parameter is set to <cite>False</cite>, empty elements are omitted
+from the list.</p>
+<p>Valid default input is a string or a list. Returns a list.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="dustbowl.config.Section.getpath">
+<tt class="descname">getpath</tt><big>(</big><em>name</em>, <em>default=''</em><big>)</big><a class="headerlink" href="#dustbowl.config.Section.getpath" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the value of the specified option as a path name, relative to
+the location of the configuration file the option is defined in.</p>
+<p>Valid default input is a string. Returns a string with normalised path.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="dustbowl.config.Section.options">
+<tt class="descname">options</tt><big>(</big><big>)</big><a class="headerlink" href="#dustbowl.config.Section.options" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return <cite>(name, value)</cite> tuples for every option in the section.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="dustbowl.config.Section.set">
+<tt class="descname">set</tt><big>(</big><em>name</em>, <em>value</em><big>)</big><a class="headerlink" href="#dustbowl.config.Section.set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Change a configuration value.</p>
+<p>These changes are not persistent unless saved with <cite>save()</cite>.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="dustbowl.config.Option">
+<em class="property">class </em><tt class="descclassname">dustbowl.config.</tt><tt class="descname">Option</tt><big>(</big><em>section</em>, <em>name</em>, <em>default=None</em>, <em>doc=''</em><big>)</big><a class="headerlink" href="#dustbowl.config.Option" title="Permalink to this definition">¶</a></dt>
+<dd><p>Descriptor for configuration options on <cite>Configurable</cite> subclasses.</p>
+<dl class="method">
+<dt id="dustbowl.config.Option.accessor">
+<tt class="descname">accessor</tt><big>(</big><em>name</em>, <em>default=''</em><big>)</big><a class="headerlink" href="#dustbowl.config.Option.accessor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the value of the specified option.</p>
+<p>Valid default input is a string. Returns a string.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="dustbowl.config.BoolOption">
+<em class="property">class </em><tt class="descclassname">dustbowl.config.</tt><tt class="descname">BoolOption</tt><big>(</big><em>section</em>, <em>name</em>, <em>default=None</em>, <em>doc=''</em><big>)</big><a class="headerlink" href="#dustbowl.config.BoolOption" title="Permalink to this definition">¶</a></dt>
+<dd><p>Descriptor for boolean configuration options.</p>
+<dl class="method">
+<dt id="dustbowl.config.BoolOption.accessor">
+<tt class="descname">accessor</tt><big>(</big><em>name</em>, <em>default=''</em><big>)</big><a class="headerlink" href="#dustbowl.config.BoolOption.accessor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the value of the specified option as boolean.</p>
+<p>This method returns <cite>True</cite> if the option value is one of &#8220;yes&#8221;, &#8220;true&#8221;,
+&#8220;enabled&#8221;, &#8220;on&#8221;, or &#8220;1&#8221;, ignoring case. Otherwise <cite>False</cite> is returned.</p>
+<p>Valid default input is a string or a bool. Returns a bool.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="dustbowl.config.IntOption">
+<em class="property">class </em><tt class="descclassname">dustbowl.config.</tt><tt class="descname">IntOption</tt><big>(</big><em>section</em>, <em>name</em>, <em>default=None</em>, <em>doc=''</em><big>)</big><a class="headerlink" href="#dustbowl.config.IntOption" title="Permalink to this definition">¶</a></dt>
+<dd><p>Descriptor for integer configuration options.</p>
+<dl class="method">
+<dt id="dustbowl.config.IntOption.accessor">
+<tt class="descname">accessor</tt><big>(</big><em>name</em>, <em>default=''</em><big>)</big><a class="headerlink" href="#dustbowl.config.IntOption.accessor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the value of the specified option as integer.</p>
+<p>If the specified option can not be converted to an integer, a
+<cite>ConfigurationError</cite> exception is raised.</p>
+<p>Valid default input is a string or an int. Returns an int.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="dustbowl.config.ListOption">
+<em class="property">class </em><tt class="descclassname">dustbowl.config.</tt><tt class="descname">ListOption</tt><big>(</big><em>section</em>, <em>name</em>, <em>default=None</em>, <em>sep='</em>, <em>'</em>, <em>keep_empty=False</em>, <em>doc=''</em><big>)</big><a class="headerlink" href="#dustbowl.config.ListOption" title="Permalink to this definition">¶</a></dt>
+<dd><p>Descriptor for configuration options that contain multiple values
+separated by a specific character.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="dustbowl.config.PathOption">
+<em class="property">class </em><tt class="descclassname">dustbowl.config.</tt><tt class="descname">PathOption</tt><big>(</big><em>section</em>, <em>name</em>, <em>default=None</em>, <em>doc=''</em><big>)</big><a class="headerlink" href="#dustbowl.config.PathOption" title="Permalink to this definition">¶</a></dt>
+<dd><p>Descriptor for file system path configuration options.</p>
+<dl class="method">
+<dt id="dustbowl.config.PathOption.accessor">
+<tt class="descname">accessor</tt><big>(</big><em>name</em>, <em>default=''</em><big>)</big><a class="headerlink" href="#dustbowl.config.PathOption.accessor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the value of the specified option as a path name, relative to
+the location of the configuration file the option is defined in.</p>
+<p>Valid default input is a string. Returns a string with normalised path.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="dustbowl.config.ExtensionOption">
+<em class="property">class </em><tt class="descclassname">dustbowl.config.</tt><tt class="descname">ExtensionOption</tt><big>(</big><em>section</em>, <em>name</em>, <em>interface</em>, <em>default=None</em>, <em>doc=''</em><big>)</big><a class="headerlink" href="#dustbowl.config.ExtensionOption" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="dustbowl.config.OrderedExtensionsOption">
+<em class="property">class </em><tt class="descclassname">dustbowl.config.</tt><tt class="descname">OrderedExtensionsOption</tt><big>(</big><em>section</em>, <em>name</em>, <em>interface</em>, <em>default=None</em>, <em>include_missing=True</em>, <em>doc=''</em><big>)</big><a class="headerlink" href="#dustbowl.config.OrderedExtensionsOption" title="Permalink to this definition">¶</a></dt>
+<dd><p>A comma separated, ordered, list of components implementing <cite>interface</cite>.
+Can be empty.</p>
+<p>If <cite>include_missing</cite> is true (the default) all components implementing the
+interface are returned, with those specified by the option ordered first.</p>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="env.html"
+                        title="previous chapter">NShell Environment</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/config.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="env.html" title="NShell Environment"
+             >previous</a> |</li>
+        <li><a href="index.html">NShell 1.0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2009, John Hampton.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
+    </div>
+  </body>
+</html>
