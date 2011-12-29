@@ -12,7 +12,7 @@
 import re
 
 # Third Party Imports
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, orm
 from sqlalchemy.orm import sessionmaker, scoped_session
 
 # Local Imports
@@ -84,7 +84,7 @@ class ConfigDataSource(Component):
         global url
 
         sections = self.config.sections()
-        source_info = {} 
+        source_info = {}
         for s in sections:
             for k, v in self.config.options(s):
                 g = url.match(k)
@@ -117,7 +117,7 @@ class ConfigDataSource(Component):
             if g and (source == g.group('source')):
                 option = g.group('option')
                 if option in KNOWN_OPTIONS:
-                    engine_args[option] = getattr(self, '_get_' + option.upper(), 
+                    engine_args[option] = getattr(self, '_get_' + option.upper(),
                                               lambda x, y: None)(section, k)
             continue
         return engine_args
@@ -127,6 +127,4 @@ class ConfigDataSource(Component):
 
     def _get_CONVERT_UNICODE(self, section, option):
         return self.config.getbool(section, option, False)
-                    
-                
-         
+

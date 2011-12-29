@@ -2,7 +2,7 @@
 #
 # Modifcations Copyright (C) 2009 John Hampton <pacopablo@pacopablo.com>
 #
-# Original code from Trac trunk r8199 
+# Original code from Trac trunk r8199
 # http://svn.edgewall.org/reops/trac/trunk
 #
 # Original Copyright and License:
@@ -31,7 +31,7 @@ import inspect
 
 # Local imports
 from api import Component, ComponentManager, Interface, IShellCommandProvider
-from api import ExtensionPoint, IShellConsoleObjectProvider, implements, NSObj
+from api import ExtensionPoint, IShellConsoleObjectProvider, implements, DustbowlObj
 from error import ConsoleObjectError
 from config import Configuration
 from log import NullLogger
@@ -61,7 +61,7 @@ class Environment(Component, ComponentManager):
     def __init__(self, config=None, entry_point=None, plugins=[],
                 logger=None, locals={}):
         """Initialize the Trac environment.
-        
+
         @param config: the absolute path to a configuration file.
         @param entry_point: The entry point used to locate plugins.
         @param plugins: a list of tuples containing paths in which to look for
@@ -99,7 +99,7 @@ class Environment(Component, ComponentManager):
 
     def component_activated(self, component):
         """Initialize additional member variables for components.
-        
+
         Every component activated through the `Environment` object gets three
         member variables: `env` (the environment object), `config` (the
         environment configuration) and `log` (a logger object)."""
@@ -110,7 +110,7 @@ class Environment(Component, ComponentManager):
     def is_component_enabled(self, cls):
         """Implemented to only allow activation of components that are not
         disabled in the configuration.
-        
+
         This is called by the `ComponentManager` base class when a component is
         about to be activated. If this method returns false, the component does
         not get activated."""
@@ -140,7 +140,7 @@ class Environment(Component, ComponentManager):
         if logger:
             self.log = logger
         else:
-            self.log = NullLogger() 
+            self.log = NullLogger()
 
 
     def load_plugins(self, plugins=[], entry_point='gsarch.plugin'):
@@ -160,7 +160,7 @@ class Environment(Component, ComponentManager):
 
 
     def __call__(self, cmd, *args, **kwargs):
-        """ Invoke a command """ 
+        """ Invoke a command """
         try:
             for command in self.commands:
                 if command.match(cmd):
@@ -181,15 +181,15 @@ class Environment(Component, ComponentManager):
 
         key = parts[-1]
         namespaces = parts[:-1]
-        global_ns = self.parent_locals.get(namespaces[0], NSObj())
+        global_ns = self.parent_locals.get(namespaces[0], DustbowlObj())
         ns_obj = global_ns
         cur_ns = [namespaces[0]]
         for ns in namespaces[1:]:
             cur_ns.append(ns)
             if not hasattr(ns_obj, ns):
-                setattr(ns_obj, ns, NSObj())
+                setattr(ns_obj, ns, DustbowlObj())
             ns_obj = getattr(ns_obj, ns)
-            if not isinstance(ns_obj, NSObj):
+            if not isinstance(ns_obj, DustbowlObj):
                 raise ConsoleObjectError('.'.join(parts), True, cur_ns)
         if not hasattr(ns_obj, key):
             setattr(ns_obj, key, value)
@@ -197,13 +197,13 @@ class Environment(Component, ComponentManager):
             raise ConsoleObjectError('.'.join(parts))
         self.parent_locals[namespaces[0]] = global_ns
 
-        
+
     def _add_global_console_object(self, key, value):
         """ Adds a console object without considering namespaces """
         if key in self.parent_locals:
             raise ConsoleObjectError(key)
         self.parent_locals[key] = value
-            
+
 
     def add_console_object(self, key, value, provider=None):
         """ Add the value to the console context with the given key """
@@ -211,7 +211,7 @@ class Environment(Component, ComponentManager):
             caller_frame = inspect.stack()[1][0]
             caller_class = ''
             if 'self' in caller_frame.f_locals:
-                caller_class = caller_frame.f_locals['self'].__class__.__name__ 
+                caller_class = caller_frame.f_locals['self'].__class__.__name__
             provider = "%s%s" % (caller_class and (caller_class + '.') or '',
                                  caller_frame.f_code.co_name)
 

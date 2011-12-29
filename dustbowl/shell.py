@@ -24,7 +24,7 @@ VERSION = '0.0.1'
 
 CMD_TOKEN = '.'
 
-class GSConsole(InteractiveConsole):
+class DustbowlConsole(InteractiveConsole):
 
     def __init__(self, locals=None, filename="<console>", args=None, logger=None):
         InteractiveConsole.__init__(self, locals=locals, filename=filename)
@@ -50,12 +50,12 @@ class GSConsole(InteractiveConsole):
             sys.ps2 = "... "
         cprt = 'Type "help", "copyright", "credits" or "license" for more information.'
         if banner is None:
-            self.write("GarterSnake Shell: Python %s on %s\n%s\n" %
+            self.write("Dustbowl: Python %s on %s\n%s\n" %
                        (sys.version, sys.platform, cprt))
         else:
             self.write("%s\n" % str(banner))
         if 'readline' in sys.modules:
-            self.write("Tabbed Completion Enabled\n")    
+            self.write("Tabbed Completion Enabled\n")
 
         more = 0
         while 1:

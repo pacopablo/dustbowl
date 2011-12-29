@@ -2,7 +2,7 @@
 #
 # Modifcations Copyright (C) 2009 John Hampton <pacopablo@pacopablo.com>
 #
-# Original code from Trac trunk r8199 
+# Original code from Trac trunk r8199
 # http://svn.edgewall.org/reops/trac/trunk
 #
 # Moved from util/text.py

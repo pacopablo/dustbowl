@@ -25,7 +25,7 @@
 #         Christopher Lenz <cmlenz@gmx.de>
 
 # Local Imports
-from error import GSError
+from error import DustbowlError
 
 __all__ = [
     'Component',
@@ -34,7 +34,7 @@ __all__ = [
     'Interface',
     'IShellCommandProvider',
     'IShellConsoleObjectProvider',
-    'NSObj',
+    'DustbowlObj',
 ]
 
 
@@ -47,7 +47,7 @@ class ExtensionPoint(property):
 
     def __init__(self, interface):
         """Create the extension point.
-        
+
         @param interface: the `Interface` subclass that defines the protocol
             for the extension point
         """
@@ -60,8 +60,8 @@ class ExtensionPoint(property):
         """Return a list of components that declare to implement the extension
         point interface.
         """
-        extensions = ComponentMeta._registry.get(self.interface, [])
-        return filter(None, [component.compmgr[cls] for cls in extensions])
+        classes = ComponentMeta._registry.get(self.interface, [])
+        return filter(None, [component.compmgr[cls] for cls in classes])
 
     def __repr__(self):
         """Return a textual representation of the extension point."""
@@ -70,7 +70,7 @@ class ExtensionPoint(property):
 
 class ComponentMeta(type):
     """Meta class for components.
-    
+
     Takes care of component and extension point registration.
     """
     _components = []
@@ -196,17 +196,17 @@ class ComponentManager(object):
         component = self.components.get(cls)
         if not component:
             if cls not in ComponentMeta._components:
-                raise GSError('Component "%s" not registered' % cls.__name__)
+                raise DustbowlError('Component "%s" not registered' % cls.__name__)
             try:
                 component = cls(self)
             except TypeError, e:
-                raise GSError('Unable to instantiate component %r (%s)' %
+                raise DustbowlError('Unable to instantiate component %r (%s)' %
                                 (cls, e))
         return component
 
     def disable_component(self, component):
         """Force a component to be disabled.
-        
+
         The argument `component` can be a class or an instance.
         """
         if not isinstance(component, type):
@@ -244,6 +244,6 @@ class IShellConsoleObjectProvider(Interface):
         The value will be injected in the console context as the given key
         """
 
-class NSObj(object):
+class DustbowlObj(object):
     """Blank object used in providing namespaced console objects"""
     pass

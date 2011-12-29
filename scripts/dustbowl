@@ -77,7 +77,7 @@ def main(argv):
     import dustbowl.tabcomp
     dustbowl.tabcomp.enable_tabbed_completion(historyPath, locals())
 
-    console = dustbowl.shell.GSConsole(locals=locals(), args=args, logger=shell_logger)
+    console = dustbowl.shell.DustbowlConsole(locals=locals(), args=args, logger=shell_logger)
     console.interact()
     return 0
 

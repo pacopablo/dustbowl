@@ -37,10 +37,10 @@ class LogCmdProvider(Component):
     clear: Clears the log.
 
     Examples:
-     1) (GSShell): log show
-     1) (GSShell): log show all
-     1) (GSShell): log save logfile.log
-     1) (GSShell): log clear
+     1) >>> .log.show
+     1) >>> .log.show.all
+     1) >>> .log.save 'logfile.log'
+     1) >>> .log.clear
     """
 
     implements(IShellCommandProvider)
@@ -101,7 +101,7 @@ class LogCmdProvider(Component):
     def _log_save(self, *args, **kwargs):
         print('Not Implemented yet')
         return False
-            
+
     def _log_clear(self, *args, **kwargs):
         self.log._buffer_hndlr.clear_log()
         self.startidx = 0

@@ -2,7 +2,7 @@
 #
 # Modifcations Copyright (C) 2009 John Hampton <pacopablo@pacopablo.com>
 #
-# Original code from Trac trunk r8199 
+# Original code from Trac trunk r8199
 # http://svn.edgewall.org/reops/trac/trunk
 #
 # Moved from core.py
@@ -25,16 +25,16 @@
 #         Christopher Lenz <cmlenz@gmx.de>
 
 __all__ = [
-    'GSError',
+    'DustbowlError',
     'ConfigurationError',
     'ConsoleObjectError',
 ]
 
-class GSError(Exception):
+class DustbowlError(Exception):
     """Exception base class for errors in Gartersnake."""
 
     title = 'Gartersnake Error'
-    
+
     def __init__(self, message, title=None, show_traceback=False):
         Exception.__init__(self, message)
         self.message = message
@@ -45,7 +45,7 @@ class GSError(Exception):
     def __unicode__(self):
         return unicode(self.message)
 
-class ConfigurationError(GSError):
+class ConfigurationError(DustbowlError):
     """Exception raised when a value in the configuration file is not valid."""
     title = 'Configuration Error'
 

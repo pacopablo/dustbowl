@@ -73,27 +73,27 @@ class Configuration(object):
 
     def get(self, section, name, default=''):
         """Return the value of the specified option.
-        
+
         Valid default input is a string. Returns a string.
         """
         return self[section].get(name, default)
 
     def getbool(self, section, name, default=''):
         """Return the specified option as boolean value.
-        
+
         If the value of the option is one of "yes", "true", "enabled", "on",
         or "1", this method wll return `True`, otherwise `False`.
-        
+
         Valid default input is a string or a bool. Returns a bool.
         """
         return self[section].getbool(name, default)
 
     def getint(self, section, name, default=''):
         """Return the value of the specified option as integer.
-        
+
         If the specified option can not be converted to an integer, a
         `ConfigurationError` exception is raised.
-        
+
         Valid default input is a string or an int. Returns an int.
         """
         return self[section].getint(name, default)
@@ -101,18 +101,18 @@ class Configuration(object):
     def getlist(self, section, name, default='', sep=',', keep_empty=False):
         """Return a list of values that have been specified as a single
         comma-separated option.
-        
+
         A different separator can be specified using the `sep` parameter. If
         the `keep_empty` parameter is set to `True`, empty elements are
         included in the list.
-        
+
         Valid default input is a string or a list. Returns a string.
         """
         return self[section].getlist(name, default, sep, keep_empty)
 
     def set(self, section, name, value):
         """Change a configuration value.
-        
+
         These changes are not persistent unless saved with `save()`.
         """
         self[section].set(name, value)
@@ -127,7 +127,7 @@ class Configuration(object):
     def options(self, section):
         """Return a list of `(name, value)` tuples for every option in the
         specified section.
-        
+
         This includes options that have default values that haven't been
         overridden.
         """
@@ -229,12 +229,12 @@ class Configuration(object):
             self.parent = None
 
         return changed
-    
+
     def _replace_here_var(self, filename):
         dirname = os.path.dirname(filename)
         f = file(filename, 'rb').read().replace(r'%(here)s', dirname)
         file(filename, 'wb').write(f)
-        
+
 
     def touch(self):
         if self.filename and os.path.isfile(self.filename) \
@@ -244,7 +244,7 @@ class Configuration(object):
 
 class Section(object):
     """Proxy for a specific configuration section.
-    
+
     Objects of this class should not be instantiated directly.
     """
     __slots__ = ['config', 'name', 'overridden']
@@ -277,7 +277,7 @@ class Section(object):
 
     def get(self, name, default=''):
         """Return the value of the specified option.
-        
+
         Valid default input is a string. Returns a string.
         """
         if self.config.parser.has_option(self.name, name):
@@ -299,7 +299,7 @@ class Section(object):
 
     def getbool(self, name, default=''):
         """Return the value of the specified option as boolean.
-        
+
         This method returns `True` if the option value is one of "yes", "true",
         "enabled", "on", or "1", ignoring case. Otherwise `False` is returned.
 
@@ -312,10 +312,10 @@ class Section(object):
 
     def getint(self, name, default=''):
         """Return the value of the specified option as integer.
-        
+
         If the specified option can not be converted to an integer, a
         `ConfigurationError` exception is raised.
-        
+
         Valid default input is a string or an int. Returns an int.
         """
         value = self.get(name, default)
@@ -324,17 +324,17 @@ class Section(object):
         try:
             return int(value)
         except ValueError:
-            raise ConfigurationError('[%s] %s: expected integer, got %s' % 
+            raise ConfigurationError('[%s] %s: expected integer, got %s' %
                                      (self.name, name, repr(value)))
 
     def getlist(self, name, default='', sep=',', keep_empty=True):
         """Return a list of values that have been specified as a single
         comma-separated option.
-        
+
         A different separator can be specified using the `sep` parameter. If
         the `keep_empty` parameter is set to `False`, empty elements are omitted
         from the list.
-        
+
         Valid default input is a string or a list. Returns a list.
         """
         value = self.get(name, default)
@@ -374,7 +374,7 @@ class Section(object):
 
     def set(self, name, value):
         """Change a configuration value.
-        
+
         These changes are not persistent unless saved with `save()`.
         """
         if not self.config.parser.has_section(self.name):
@@ -395,7 +395,7 @@ class Option(object):
 
     def __init__(self, section, name, default=None, doc=''):
         """Create the extension point.
-        
+
         @param section: the name of the configuration section this option
             belongs to
         @param name: the name of the option
