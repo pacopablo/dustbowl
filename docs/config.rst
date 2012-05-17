@@ -1,5 +1,5 @@
-NShell Configuration
-====================
+Dustbowl Configuration
+=======================
 
 .. currentmodule:: dustbowl.config
 .. autoclass:: Configuration

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# NShell documentation build configuration file, created by
+# Dustbowl documentation build configuration file, created by
 # sphinx-quickstart on Fri Dec 18 12:00:48 2009.
 #
 # This file is execfile()d with the current directory set to its containing dir.
@@ -37,7 +37,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'NShell'
+project = u'Dustbowl'
 copyright = u'2009, John Hampton'
 
 # The version info for the project you're documenting, acts as replacement for
@@ -158,7 +158,7 @@ html_static_path = ['_static']
 #html_file_suffix = ''
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'NShelldoc'
+htmlhelp_basename = 'Dustbowldoc'
 
 
 # -- Options for LaTeX output --------------------------------------------------
@@ -172,7 +172,7 @@ htmlhelp_basename = 'NShelldoc'
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-  ('index', 'NShell.tex', u'NShell Documentation',
+  ('index', 'Dustbowl.tex', u'Dustbowl Documentation',
    u'John Hampton', 'manual'),
 ]
 
