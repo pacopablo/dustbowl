@@ -5,3 +5,4 @@ dist/
 build/
 .build/
 docs/_build/
+.idea/*.iml
