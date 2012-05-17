@@ -1,5 +1,5 @@
-NShell API
-==========
+Dustbowl API
+=============
 
 .. currentmodule:: dustbowl.api
 .. autoclass:: Component
