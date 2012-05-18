@@ -75,6 +75,7 @@ def load_eggs(env, paths, entry_point, auto_enable=False):
 
     for entry in ws.iter_entry_points(entry_point):
         env.log.debug('Loading %s from %s', entry.name, entry.dist)
+        env._plugins_loaded.append(entry.name)
         try:
             # We need to make sure the distribution is on the path before we can load it.
             entry.dist.activate()

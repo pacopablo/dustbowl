@@ -60,7 +60,7 @@ class Environment(Component, ComponentManager):
 
     def __init__(self, config=None, entry_point=None, plugins=[],
                 logger=None, locals={}):
-        """Initialize the Trac environment.
+        """Initialize the Dustbowl environment.
 
         @param config: the absolute path to a configuration file.
         @param entry_point: The entry point used to locate plugins.
@@ -74,6 +74,7 @@ class Environment(Component, ComponentManager):
 
         self.setup_config(config)
         self.setup_log(logger)
+        self._plugins_loaded = list()
         self.load_plugins(plugins, entry_point=entry_point)
         self.parent_locals = locals
         for provider in self.console_objects:
@@ -87,14 +88,6 @@ class Environment(Component, ComponentManager):
                 self.add_env_object(key, value, provider.__class__.__name__)
                 continue
             continue
-
-#        from gartersnake.core import api
-#        from gartersnake import __version__ as VERSION
-#        self.systeminfo = [
-#            ('Gartersnake', get_pkginfo(api).get('version', VERSION)),
-#            ('Python', sys.version),
-#            ('setuptools', setuptools.__version__),
-#            ]
 
 
     def component_activated(self, component):
@@ -143,7 +136,7 @@ class Environment(Component, ComponentManager):
             self.log = NullLogger()
 
 
-    def load_plugins(self, plugins=[], entry_point='gsarch.plugin'):
+    def load_plugins(self, plugins=[], entry_point='dustbowl.modules'):
         """ Load plugins """
         disabled = []
         enabled = [os.path.dirname(pkg_resources.resource_filename(__name__, ''))]

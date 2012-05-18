@@ -54,6 +54,8 @@ class DustbowlConsole(InteractiveConsole):
                        (sys.version, sys.platform, cprt))
         else:
             self.write("%s\n" % str(banner))
+        for plugin in self.env._plugins_loaded:
+            self.write("Loaded %s\n" % plugin)
         if 'readline' in sys.modules:
             self.write("Tabbed Completion Enabled\n")
 
