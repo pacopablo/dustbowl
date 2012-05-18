@@ -6,7 +6,7 @@
 # This software is licensed as described in the file COPYING, which
 # you should have received as part of this distribution.
 #
-# Author: John Hampton <pacopablo@pacopablo.com
+# Author: John Hampton <pacopablo@pacopablo.com>
 
 # Standard library imports
 import sys
@@ -20,7 +20,7 @@ from code import InteractiveConsole, compile_command
 # Local imports
 import dustbowl.env
 
-VERSION = '0.0.1'
+VERSION = '1.0.1'
 
 CMD_TOKEN = '.'
 

@@ -69,6 +69,9 @@ class Environment(Component, ComponentManager):
                         plugins loaded from the specified path should be
                         auto-enabled.
         @param logger: a Python logger instance.
+
+        ``sys.path`` will be automatically added to the list of plugin
+        directories.  All entries of ``sys.path`` will not be auto-enabled.
         """
         ComponentManager.__init__(self)
 
@@ -138,7 +141,7 @@ class Environment(Component, ComponentManager):
 
     def load_plugins(self, plugins=[], entry_point='dustbowl.modules'):
         """ Load plugins """
-        disabled = []
+        disabled = list(sys.path)
         enabled = [os.path.dirname(pkg_resources.resource_filename(__name__, ''))]
         for path, auto_enable in plugins:
             if auto_enable:

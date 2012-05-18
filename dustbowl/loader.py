@@ -60,7 +60,7 @@ def _log_error(env, item, e):
 
 
 def load_eggs(env, paths, entry_point, auto_enable=False):
-    """Loader that loads any eggs in the plugin directory."""
+    """Loader that loads any eggs in the plugin directories."""
     # Note that the following doesn't seem to support unicode search_path
     ws = pkg_resources.WorkingSet([])
     distributions, errors = ws.find_plugins(pkg_resources.Environment(paths))

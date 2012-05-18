@@ -20,7 +20,7 @@ from code import InteractiveConsole, compile_command
 # Local imports
 import dustbowl.shell
 
-VERSION='0.0.1'
+VERSION='1.0.1'
 
 
 
@@ -28,7 +28,7 @@ def doArgs(argv):
     """ Parse the command line arguments.
 
     --history=<file>    Path to the readline command history file.  Default:
-                        .gshistory
+                        .dustbowl.hist
     """
     global VERSION
     usage = 'usage: %prog [options]'
@@ -37,7 +37,7 @@ def doArgs(argv):
     parser = OptionParser(usage=usage, version=version, description=description)
     parser.add_option('', '--history', dest='histfile', type="string",
                         help="Path to readline history file", metavar='<path>',
-                        default='.gshistory')
+                        default='.dustbowl.hist')
     parser.add_option('-c', '--config', dest='config', type="string",
                         help="Path to shell config .ini file", metavar='<path>',
                         default='')
