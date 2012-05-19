@@ -78,8 +78,9 @@ class Environment(Component, ComponentManager):
         self.setup_config(config)
         self.setup_log(logger)
         self._plugins_loaded = list()
-        self.load_plugins(plugins, entry_point=entry_point)
+        self.load_modules(plugins, entry_point=entry_point)
         self.parent_locals = locals
+
         for provider in self.console_objects:
             for key, value in provider.get_console_objects():
                 self.add_console_object(key, value, provider.__class__.__name__)
@@ -125,11 +126,9 @@ class Environment(Component, ComponentManager):
                 return enabled
         return False
 
-
     def setup_config(self, configpath):
         """Load the configuration file."""
         self.config = Configuration(configpath)
-
 
     def setup_log(self, logger):
         """Initialize the logging sub-system."""
@@ -138,11 +137,17 @@ class Environment(Component, ComponentManager):
         else:
             self.log = NullLogger()
 
-
-    def load_plugins(self, plugins=[], entry_point='dustbowl.modules'):
+    def load_modules(self, plugins=[], entry_point='dustbowl.modules'):
         """ Load plugins """
+        ws = pkg_resources.WorkingSet([])
+
+        # Load core modules
+        ws.add_entry(os.path.dirname(
+                        pkg_resources.resource_filename(__name__, '')))
+
         disabled = list(sys.path)
         enabled = [os.path.dirname(pkg_resources.resource_filename(__name__, ''))]
+        print(os.path.dirname(pkg_resources.resource_filename(__name__, '')))
         for path, auto_enable in plugins:
             if auto_enable:
                 enabled.append(path)

@@ -49,8 +49,8 @@ def doArgs(argv):
 
     if options.config and os.path.isfile(options.config):
         pass
-    elif os.path.isfile('shell.ini'):
-        options.config = 'shell.ini'
+    elif os.path.isfile('dustbowl.ini'):
+        options.config = 'dustbowl.ini'
 
     plugin_paths = options.plugins.split(',')
     options.plugins = []

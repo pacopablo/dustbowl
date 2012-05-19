@@ -16,6 +16,9 @@ def enable_tabbed_completion(historyPath='.dustbowl.hist', context=None):
 
     readline.parse_and_bind('tab: complete')
     readline.parse_and_bind ("bind ^I rl_complete")
+    if 'libedit' in readline.__doc__:
+        readline.parse_and_bind('bind "\e[3~" ed-delete-next-char')
+
     context = context or globals()
     readline.set_completer(rlcompleter.Completer(context).complete)
 
