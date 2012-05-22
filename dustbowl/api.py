@@ -153,7 +153,7 @@ class Component(object):
 
     @staticmethod
     def implements(*interfaces):
-        """Can be used in the class definiton of `Component` subclasses to
+        """Can be used in the class definition of `Component` subclasses to
         declare the extension points that are extended.
         """
         import sys
@@ -182,7 +182,7 @@ class ComponentManager(object):
             self.components[self.__class__] = self
 
     def __contains__(self, cls):
-        """Return wether the given class is in the list of active components."""
+        """Return whether the given class is in the list of active components"""
         return cls in self.components
 
     def __getitem__(self, cls):

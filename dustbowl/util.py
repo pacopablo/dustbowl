@@ -36,10 +36,9 @@ from StringIO import StringIO
 
 __all__ = [
     'to_unicode',
-    'exception_to_unicode',
+    'format_exception',
     'get_last_traceback',
 ]
-
 
 def to_unicode(text, charset=None):
     """Convert a `str` object to an `unicode` object.
@@ -58,16 +57,6 @@ def to_unicode(text, charset=None):
     by using an encoding which maps each byte of the input to an unicode
     character, e.g. by doing `unicode(text, 'iso-8859-1')`.
     """
-    if not isinstance(text, str):
-        if isinstance(text, Exception):
-            # two possibilities for storing unicode strings in exception data:
-            try:
-                # custom __str__ method on the exception (e.g. PermissionError)
-                return unicode(text)
-            except UnicodeError:
-                # unicode arguments given to the exception (e.g. parse_date)
-                return ' '.join([to_unicode(arg) for arg in text.args])
-        return unicode(text)
     if charset:
         return unicode(text, charset, 'replace')
     else:
@@ -76,15 +65,15 @@ def to_unicode(text, charset=None):
         except UnicodeError:
             return unicode(text, locale.getpreferredencoding(), 'replace')
 
-def exception_to_unicode(e, traceback=""):
-    message = '%s: %s' % (e.__class__.__name__, to_unicode(e))
+def format_exception(e, traceback=""):
+    message = '%s: %s' % (e.__class__.__name__, str(e))
     if traceback:
         traceback_only = get_last_traceback().split('\n')[:-2]
-        message = '\n%s\n%s' % (to_unicode('\n'.join(traceback_only)), message)
+        message = '\n%s\n%s' % ('\n'.join(traceback_only), message)
     return message
 
 def get_last_traceback():
     tb = StringIO()
     traceback.print_exc(file=tb)
-    return to_unicode(tb.getvalue())
+    return tb.getvalue()
 

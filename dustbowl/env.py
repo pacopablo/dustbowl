@@ -27,15 +27,15 @@ import inspect
 
 # Third Party imports
 import pkg_resources
-from pkg_resources import DistributionNotFound, VersionConflict, UnknownExtras, UnknownExtra
+from pkg_resources import DistributionNotFound, VersionConflict, UnknownExtra
 
 # Local imports
 from api import Component, ComponentManager, Interface, IShellCommandProvider
-from api import ExtensionPoint, IShellConsoleObjectProvider, implements, DustbowlObj
+from api import ExtensionPoint, IShellConsoleObjectProvider, DustbowlObj
 from error import ConsoleObjectError
 from config import Configuration
 from log import NullLogger
-from loader import load_plugins
+from util import format_exception
 
 __all__ = [
     'Environment',
@@ -123,14 +123,10 @@ class Environment(Component, ComponentManager):
         else:
             component_name = cls.lower()
 
-        rules = [(name.lower(), value.lower() in ('enabled', 'on'))
-                 for name, value in self.config.options('components')]
-        rules.sort(lambda a, b: -cmp(len(a[0]), len(b[0])))
-
-        for pattern, enabled in rules:
-            if component_name == pattern or pattern.endswith('*') \
-                    and component_name.startswith(pattern[:-1]):
-                return enabled
+        for key, value in self.plugin_data.iteritems():
+            if component_name == key or component_name.startswith(key + '.'):
+                value['activated'] = True
+                return value['loaded']
         return False
 
     def setup_config(self, configpath):
@@ -144,8 +140,32 @@ class Environment(Component, ComponentManager):
         else:
             self.log = NullLogger()
 
+    def is_enabled(self, module_name):
+        """ Return whether a module is enabled in the config.
+        """
+        for key, value in self.config.options('components'):
+            k = key.lower()
+            mod = module_name.lower()
+            if mod == k or k.endswith('*') and mod.startswith(k[:-1]):
+                return self.config.getbool('components', key)
+        return False
+
     def load_modules(self, plugins=None, entry_point='dustbowl.modules'):
         """ Load plugins """
+        def _log_error(item, e):
+            ue = format_exception(e)
+            if isinstance(e, DistributionNotFound):
+                self.log.debug('Skipping "%s": ("%s" not found)', item, ue)
+            elif isinstance(e, VersionConflict):
+                self.log.error('Skipping "%s": (version conflict "%s")',
+                              item, ue)
+            elif isinstance(e, UnknownExtra):
+                self.log.error('Skipping "%s": (unknown extra "%s")', item, ue)
+            elif isinstance(e, ImportError):
+                self.log.error('Skipping "%s": (can\'t import "%s")', item, ue)
+            else:
+                self.log.error('Skipping "%s": (error "%s")', item, ue)
+
         ws = pkg_resources.WorkingSet(sys.path)
 
         # Look for core modules
@@ -175,53 +195,43 @@ class Environment(Component, ComponentManager):
 
         # Look for modules from plugin dir specified in the config or on the
         # command line
-        distributions, errors = ws.find_plugins(pkg_resources.Environment(paths))
+        distributions, errors = ws.find_plugins(
+                                        pkg_resources.Environment(plugins))
         for dist in distributions:
-#            env.log.debug('Found plugin %s at %s', dist, dist.location)
+            self.log.debug('Found plugin %s at %s', dist, dist.location)
             ws.add(dist)
 
-        for dist, e in errors.iteritems():
-            _log_error(env, dist, e)
-
         for entry in ws.iter_entry_points(entry_point):
-            env.log.debug('Loading %s from %s', entry.name, entry.dist)
-            env._plugins_loaded.append(entry.name)
-            try:
-                # We need to make sure the distribution is on the path before we can load it.
-                entry.dist.activate()
-                entry.load(require=True)
-            except (ImportError, DistributionNotFound, VersionConflict,
-                    UnknownExtra), e:
-                """ Print the last traceback to the debug buffer """
-                _log_error(env, entry, e)
-            else:
-                if auto_enable:
-                    _enable_plugin(env, entry.module_name)
+            entry_data = {
+                'entry' : entry,
+                'loaded' : False,
+                'activated' : False,
+                'auto_enable' : False,
+                }
+            self.plugin_data.setdefault(entry.name, entry_data)
+
+        for entry_name, data in self.plugin_data.iteritems():
+            if data['auto_enable'] or self.is_enabled(entry_name):
+                try:
+                    self.log.debug('Loading %s from %s', data['entry'].name,
+                                  data['entry'].dist)
+                    # We need to make sure the distribution is on the path
+                    # before we can load it.
+                    data['entry'].dist.activate()
+                    data['entry'].load(require=True)
+                    data['loaded'] = True
+                except (ImportError, DistributionNotFound, VersionConflict,
+                        UnknownExtra), e:
+                    # Print the last traceback to the debug buffer
+                    _log_error(data['entry'], e)
+            continue
 
 
+        for dist, e in errors.iteritems():
+            _log_error(dist, e)
 
 
-
-
-
-        for path in sys.path:
-            ws.add_entry(path)
-
-        disabled = list(sys.path)
-        enabled = [os.path.dirname(pkg_resources.resource_filename(__name__, ''))]
-        print(os.path.dirname(pkg_resources.resource_filename(__name__, '')))
-        for path, auto_enable in plugins:
-            if auto_enable:
-                enabled.append(path)
-            else:
-                disabled.append(path)
-        inherited_plugins = self.config.get('inherit', 'plugins_dir', )
-        if inherited_plugins:
-            enabled.append(inherited_plugins)
-        load_plugins(self, entry_point, enabled, True)
-        load_plugins(self, entry_point, disabled, False)
-
-
+    #noinspection PyBroadException
     def __call__(self, cmd, *args, **kwargs):
         """ Invoke a command """
         try:

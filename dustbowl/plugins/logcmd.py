@@ -10,8 +10,6 @@
 
 # Standard Library Imports
 import logging
-import logging.handlers
-import sys
 
 # Third Party Imports
 
@@ -22,6 +20,7 @@ __all__ = [
     'LogCmdProvider',
 ]
 
+#noinspection PyInitNewSignature
 class LogCmdProvider(Component):
     """ Shows the messages that have been logged.
 
@@ -75,7 +74,7 @@ class LogCmdProvider(Component):
                 self.level = level
             else:
                 print("Unknown logging level %s.  Log level remains: %s" %
-                        (level, logging_levelNames[self.level]))
+                        (level, logging._levelNames[self.level]))
         pass
 
     def _log_show(self, cmd, *args, **kwargs):
@@ -94,6 +93,8 @@ class LogCmdProvider(Component):
             text = '\n  '.join(self.log._buffer_hndlr.get_lines(startidx))
         elif showall[0].lower() == 'all':
             text = '\n  '.join(self.log._buffer_hndlr.get_lines())
+        else:
+            text = '\n'
         print('  ' + text)
         self.startidx = length
         return False

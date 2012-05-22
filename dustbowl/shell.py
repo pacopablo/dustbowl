@@ -10,9 +10,6 @@
 
 # Standard library imports
 import sys
-import os
-import traceback
-from optparse import OptionParser
 from code import InteractiveConsole, compile_command
 
 # Third Party imports
@@ -22,7 +19,7 @@ import dustbowl.env
 
 VERSION = '1.0.1'
 
-CMD_TOKEN = '.'
+CMD_TOKEN = "."
 
 class DustbowlConsole(InteractiveConsole):
 
@@ -40,6 +37,8 @@ class DustbowlConsole(InteractiveConsole):
     def interact(self, banner=None):
         global CMD_TOKEN
 
+        # So, these two try statements don't seem very Pythonic.  I'm game
+        # for a nicer way to determine whether or not ``ps1`` and ``ps2`` exist
         try:
             sys.ps1
         except AttributeError:
@@ -54,8 +53,9 @@ class DustbowlConsole(InteractiveConsole):
                        (sys.version, sys.platform, cprt))
         else:
             self.write("%s\n" % str(banner))
-        for plugin in self.env._plugins_loaded:
-            self.write("Loaded %s\n" % plugin)
+        for i in self.env.plugin_data.itervalues():
+            if i['loaded']:
+                self.write("Loaded %s\n" % i['entry'].name)
         if 'readline' in sys.modules:
             self.write("Dustbowl Tabbed Completion Enabled\n")
 

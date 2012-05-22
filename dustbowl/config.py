@@ -24,9 +24,10 @@ from ConfigParser import ConfigParser
 
 # Third Party Imports
 
-# Local importsj
+# Local imports
 from util import to_unicode
 from error import ConfigurationError
+from api import ExtensionPoint
 
 __all__ = ['Configuration', 'Option', 'BoolOption', 'IntOption', 'ListOption',
            'PathOption', 'ExtensionOption', 'OrderedExtensionsOption',
@@ -273,7 +274,7 @@ class Section(object):
                     yield option
 
     def __repr__(self):
-        return '<Section [%s]>' % (self.name)
+        return '<Section [%s]>' % self.name
 
     def get(self, name, default=''):
         """Return the value of the specified option.
@@ -408,12 +409,14 @@ class Option(object):
         self.registry[(self.section, self.name)] = self
         self.__doc__ = doc
 
+    #noinspection PyArgumentList
     def __get__(self, instance, owner):
         if instance is None:
             return self
         config = getattr(instance, 'config', None)
         if config and isinstance(config, Configuration):
             section = config[self.section]
+            #noinspection PyArgumentList
             value = self.accessor(section, self.name, self.default)
             return value
         return None

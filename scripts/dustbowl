@@ -13,7 +13,6 @@
 import sys
 import os
 from optparse import OptionParser
-from code import InteractiveConsole, compile_command
 
 # Third Party imports
 
@@ -52,12 +51,12 @@ def doArgs(argv):
     elif os.path.isfile('dustbowl.ini'):
         options.config = 'dustbowl.ini'
 
-    plugin_paths = options.plugins.split(',')
-    options.plugins = []
-    for path in plugin_paths:
+    paths = list()
+    for path in options.plugins.split(','):
         if os.path.isdir(path):
-            options.plugins.append((path, True))
+            paths.append(path)
         continue
+    options.plugins = paths
 
     return options
 

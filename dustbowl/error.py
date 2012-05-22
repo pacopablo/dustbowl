@@ -57,15 +57,18 @@ class ConsoleObjectError(Exception):
     not being able to support the object.
     """
 
-    def __init__(self, key, is_ns=False, cur_ns=[]):
+    def __init__(self, key, is_ns=False, cur_ns=None):
         if not is_ns or (is_ns and not cur_ns):
             self.msg = "The key >>%s<< already exists in the console." % key
         else:
             self.msg = "The namespace %s is not an object that can be " \
                        "assigned methods and other namespaces.  Can not " \
                        "add object: %s" % ('.'.join(cur_ns), key)
+        self.key = key
+        self.is_ns = is_ns
+        self.cur_ns = cur_ns or []
 
     def __repr__(self):
-        return "<ConsoleObjectError(key, is_ns=%s, cur_ns=%s)>" \
-               % (str(key), str(is_ns), str(cur_ns))
+        return "<ConsoleObjectError(key=%s, is_ns=%s, cur_ns=%s)>" \
+               % (str(self.key), str(self.is_ns), str(self.cur_ns))
 
