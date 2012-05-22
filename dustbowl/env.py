@@ -22,12 +22,12 @@
 
 # Standard Library imports
 import sys
-#import setuptools
-import pkg_resources
 import os.path
 import inspect
 
 # Third Party imports
+import pkg_resources
+from pkg_resources import DistributionNotFound, VersionConflict, UnknownExtras, UnknownExtra
 
 # Local imports
 from api import Component, ComponentManager, Interface, IShellCommandProvider
@@ -58,8 +58,8 @@ class Environment(Component, ComponentManager):
     console_objects = ExtensionPoint(IShellConsoleObjectProvider)
     env_objects = ExtensionPoint(IEnvObjectProvider)
 
-    def __init__(self, config=None, entry_point=None, plugins=[],
-                logger=None, locals={}):
+    def __init__(self, config=None, entry_point=None, plugins=None,
+                logger=None, locals=None):
         """Initialize the Dustbowl environment.
 
         @param config: the absolute path to a configuration file.
@@ -75,11 +75,18 @@ class Environment(Component, ComponentManager):
         """
         ComponentManager.__init__(self)
 
+
         self.setup_config(config)
         self.setup_log(logger)
-        self._plugins_loaded = list()
+
+        # Load plugins
+        self.plugin_data = dict()
+        if not plugins:
+            plugins = list()
         self.load_modules(plugins, entry_point=entry_point)
-        self.parent_locals = locals
+
+        if locals:
+            self.parent_locals = locals
 
         for provider in self.console_objects:
             for key, value in provider.get_console_objects():
@@ -137,13 +144,68 @@ class Environment(Component, ComponentManager):
         else:
             self.log = NullLogger()
 
-    def load_modules(self, plugins=[], entry_point='dustbowl.modules'):
+    def load_modules(self, plugins=None, entry_point='dustbowl.modules'):
         """ Load plugins """
-        ws = pkg_resources.WorkingSet([])
+        ws = pkg_resources.WorkingSet(sys.path)
 
-        # Load core modules
+        # Look for core modules
         ws.add_entry(os.path.dirname(
                         pkg_resources.resource_filename(__name__, '')))
+        for entry in ws.iter_entry_points(entry_point):
+            if entry.name.startswith('dustbowl.plugins'):
+                entry_data = {
+                    'entry' : entry,
+                    'loaded' : False,
+                    'activated' : False,
+                    'auto_enable' : True,
+                }
+                self.plugin_data.setdefault(entry.name, entry_data)
+
+        # Look for modules in sys.path
+        for p in sys.path:
+            ws.add_entry(p)
+        for entry in ws.iter_entry_points(entry_point):
+            entry_data = {
+                'entry' : entry,
+                'loaded' : False,
+                'activated' : False,
+                'auto_enable' : False,
+            }
+            self.plugin_data.setdefault(entry.name, entry_data)
+
+        # Look for modules from plugin dir specified in the config or on the
+        # command line
+        distributions, errors = ws.find_plugins(pkg_resources.Environment(paths))
+        for dist in distributions:
+#            env.log.debug('Found plugin %s at %s', dist, dist.location)
+            ws.add(dist)
+
+        for dist, e in errors.iteritems():
+            _log_error(env, dist, e)
+
+        for entry in ws.iter_entry_points(entry_point):
+            env.log.debug('Loading %s from %s', entry.name, entry.dist)
+            env._plugins_loaded.append(entry.name)
+            try:
+                # We need to make sure the distribution is on the path before we can load it.
+                entry.dist.activate()
+                entry.load(require=True)
+            except (ImportError, DistributionNotFound, VersionConflict,
+                    UnknownExtra), e:
+                """ Print the last traceback to the debug buffer """
+                _log_error(env, entry, e)
+            else:
+                if auto_enable:
+                    _enable_plugin(env, entry.module_name)
+
+
+
+
+
+
+
+        for path in sys.path:
+            ws.add_entry(path)
 
         disabled = list(sys.path)
         enabled = [os.path.dirname(pkg_resources.resource_filename(__name__, ''))]
