@@ -13,6 +13,8 @@ import sys
 from code import InteractiveConsole, compile_command
 
 # Third Party imports
+import colorama
+from colorama import Fore, Style
 
 # Local imports
 import dustbowl.env
@@ -48,14 +50,17 @@ class DustbowlConsole(InteractiveConsole):
         except AttributeError:
             sys.ps2 = "... "
         cprt = 'Type "help", "copyright", "credits" or "license" for more information.'
+        colorama.init()
         if banner is None:
-            self.write("Dustbowl: Python %s on %s\n%s\n" %
+            self.write(Style.BRIGHT + Fore.BLUE + "Dustbowl" + Fore.RESET +
+                       Style.NORMAL + ": Python %s on %s\n%s\n" %
                        (sys.version, sys.platform, cprt))
         else:
             self.write("%s\n" % str(banner))
         for i in self.env.plugin_data.itervalues():
             if i['loaded']:
-                self.write("Loaded %s\n" % i['entry'].name)
+                self.write(Style.DIM + "Loaded %s\n" % i['entry'].name +
+                           Style.NORMAL)
         if 'readline' in sys.modules:
             self.write("Dustbowl Tabbed Completion Enabled\n")
 

@@ -20,7 +20,7 @@ setup(
     description='Dustbowl',
     scripts=['scripts/dustbowl'],
     url='http://pacopablo.github.com/dustbowl',
-    install_requires = ['SQLAlchemy'],
+    install_requires = ['SQLAlchemy', 'colorama'],
     license='MIT',
     zip_safe = False,
     entry_points = """
@@ -28,6 +28,7 @@ setup(
         dustbowl.plugins.logcmd = dustbowl.plugins.logcmd
         dustbowl.plugins.datasources = dustbowl.plugins.datasources
         dustbowl.plugins.config = dustbowl.plugins.config
+        dustbowl.plugins.modules = dustbowl.plugins.modules
     """,
     long_description = """
     Dustbowl

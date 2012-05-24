@@ -16,6 +16,7 @@ __author__ = 'John Hampton'
 
 # Third Party Imports
 from dustbowl.api import IShellCommandProvider, Component, implements
+from colorama import Fore, Style
 
 
 __all__ = [
@@ -40,9 +41,9 @@ class ModuleCmdProvider(Component):
 
     Examples:
      1) >>> .module.list
-     1) >>> .module.list all
-     1) >>> .module.list enabled
-     1) >>> .module.list disabled
+     1) >>> .module.list 'all'
+     1) >>> .module.list 'enabled'
+     1) >>> .module.list 'disabled'
      1) >>> .module enable 'module_spec'
      1) >>> .module.disable 'nodule_spec'
     """
@@ -57,8 +58,36 @@ class ModuleCmdProvider(Component):
         cmds = cmd.split('.')
         num_cmds = len(cmds)
         if num_cmds == 1:
-            self.log.log(self.level, *args, **kwargs)
-        elif num_cmds > 1:
-            f = getattr(self, '_log_%s' % cmds[1], None)
-            if f:
-                f(cmd, *args, **kwargs)
+            cmd = 'list'
+        else:
+            cmd = cmds[1]
+        self.log.debug('ModuleCmdProvider: num_cmds = %d' % num_cmds)
+        f = getattr(self, '_module_%s' % cmd, None)
+        if f:
+            f(cmd, *args, **kwargs)
+
+    def _module_list(self, cmd, *args, **kwargs):
+        """ List all modules found and their activation status
+        """
+
+        print ("_module_list args: %s" % str(args))
+        if len(args) > 0:
+            list_option = str(args[0]).lower()
+        else:
+            list_option = 'all'
+        print (Style.DIM + "Active   Module" + Style.NORMAL)
+        sorted_modules = self.env.plugin_data.keys()
+        sorted_modules.sort()
+        for name in sorted_modules:
+            if self.env.plugin_data[name]['activated']:
+                if list_option in ['all', 'enabled']:
+                    print(Fore.GREEN + Style.BRIGHT + "  *      " +
+                          Style.RESET_ALL + "%s" % name)
+            else:
+                if list_option in ['all', 'disabled']:
+                    print(Style.DIM + "         %s" % name + Style.NORMAL)
+            continue
+
+
+
+
